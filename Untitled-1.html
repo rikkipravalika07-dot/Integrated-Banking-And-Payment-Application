@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Advanced Multi Banking System</title>
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    margin:0;
+    background:linear-gradient(to right,#0f2027,#203a43,#2c5364);
+}
+
+header{
+    background:#1b2b34;
+    color:white;
+    padding:20px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+section{
+    display:none;
+    padding:20px;
+    color:white;
+}
+
+.active{
+    display:block;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:none;
+}
+
+button{
+    width:100%;
+    padding:18px;
+    margin:10px 0;
+    font-size:17px;
+    font-weight:bold;
+    border:none;
+    border-radius:14px;
+    background:#ff4d2d;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#ff2e00;
+    transform:scale(1.03);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    color:black;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+th{
+    background:#1b2b34;
+    color:white;
+    padding:10px;
+}
+
+td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+}
+
+.success{
+    color:lightgreen;
+    font-weight:bold;
+}
+
+/* Highlight Recommended */
+.recommended{ 
+    background:#d4edda;
+    font-weight:bold;
+}
+
+/* Chatbot */
+.chatbox{
+    background:white;
+    color:black;
+    height:300px;
+    overflow-y:auto;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.bot{color:green;font-weight:bold;}
+.user{color:blue;font-weight:bold;}
+
+.calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:10px;
+}
+
+canvas{
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<header>Advanced Multi Banking System</header>
+
+<!-- LOGIN -->
+<section id="loginSection" class="active">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+</section>
+
+<!-- LANGUAGE -->
+<section id="languageSection">
+  <h2>Select Language</h2>
+  <select>
+    <option>English</option>
+    <option>Hindi</option>
+    <option>Telugu</option>
+  </select>
+  <button onclick="goLoanForm()">Continue</button>
+</section>
+
+<!-- LOAN FORM -->
+<section id="loanFormSection">
+  <h2>Loan Application</h2>
+  <p> 
+    <b>Important:</b><br>
+    ✔ Credit Score (300-900) affects approval percentage.<br>
+    ✔ Higher score = Higher approval chance.<br>
+    ✔ Adding Co-Applicant increases approval probability.
+  </p>
+
+  <select id="loanType">
+    <option>Home</option>
+    <option>Car</option>
+    <option>Personal</option>
+    <option>Education</option>
+  </select>
+
+  <input type="number" id="loanAmountReq" placeholder="Loan Amount">
+  <input type="number" id="loanTenurePref" placeholder="Tenure (Years)">
+  <select id="coApplicant">
+    <option>No</option>
+    <option>Yes</option>
+  </select>
+  <input type="number" id="creditScore" placeholder="Credit Score (300-900)">
+  <button onclick="analyzeLoan()">Submit</button>
+</section>
+
+<!-- LOAN RESULT -->
+<section id="loanResultSection">
+  <h2>Loan Eligibility & Bank Comparison</h2>
+  <div id="loanResult"></div>
+  <!-- Loan Eligibility Meter -->
+  <div id="loanMeterSection">
+    <h3>Loan Approval Probability</h3>
+    <div style="background:#ddd; border-radius:20px; overflow:hidden; height:30px; width:100%;">
+      <div id="eligibilityBar" style="height:100%; width:0%; background:lightgreen;"></div>
+    </div>
+    <p id="eligibilityText"></p>
+  </div>
+  <button onclick="goDashboard()">Continue to Dashboard</button>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboardSection">
+  <h2>Dashboard</h2>
+  <button onclick="showUPI()">UPI Payment</button>
+  <button onclick="showConverter()">Currency Converter</button>
+  <button onclick="showCalculator()">Calculator</button>
+  <button onclick="showChatbot()">Banking Assistant (AI)</button>
+  <button onclick="showEMIGraph()">EMI Calculator & Graph</button>
+  <button onclick="logout()">Logout</button>
+</section>
+
+<!-- CHATBOT -->
+<section id="chatbotSection">
+  <h2>Banking Assistant</h2>
+  <div class="chatbox" id="chatArea"></div>
+  <input type="text" id="userQuestion" placeholder="Ask: Best home loan?">
+  <button onclick="askBot()">Ask</button>
+  <button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- CURRENCY -->
+<section id="converterSection">
+  <h2>Currency Converter</h2>
+  <input type="number" id="amount" placeholder="Amount">
+  <select id="fromCurrency">
+    <option value="INR">INR</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+  </select>
+  <select id="toCurrency">
+    <option value="USD">USD</option>
+    <option value="INR">INR</option>
+    <option value="EUR">EUR</option>
+  </select>
+  <button onclick="convertCurrency()">Convert</button>
+  <h3 id="conversionResult"></h3>
+  <button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculatorSection">
+  <h2>Smart Calculator</h2>
+  <input type="text" id="calcDisplay" readonly>
+  <div class="calc-grid">
+    <button onclick="press('7')">7</button>
+    <button onclick="press('8')">8</button>
+    <button onclick="press('9')">9</button>
+    <button onclick="press('/')">÷</button>
+
+    <button onclick="press('4')">4</button>
+    <button onclick="press('5')">5</button>
+    <button onclick="press('6')">6</button>
+    <button onclick="press('*')">×</button>
+
+    <button onclick="press('1')">1</button>
+    <button onclick="press('2')">2</button>
+    <button onclick="press('3')">3</button>
+    <button onclick="press('-')">−</button>
+
+    <button onclick="press('0')">0</button>
+    <button onclick="press('.')">.</button>
+    <button onclick="calculateResult()">=</button>
+    <button onclick="press('+')">+</button>
+
+    <button onclick="clearCalc()" style="grid-column:span 4;background:red;">Clear</button>
+  </div>
+  <button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- UPI -->
+<section id="upiSection">
+  <h2>UPI Payment</h2>
+  <input type="text" id="upiID" placeholder="example@upi">
+  <input type="number" id="upiAmount" placeholder="Amount">
+  <button onclick="generateUPI()">Generate</button>
+  <div id="upiLink"></div>
+  <div id="paymentStatus"></div>
+  <button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- EMI CALCULATOR & GRAPH -->
+<section id="emiGraphSection">
+  <h2>EMI Calculator & Graph</h2>
+  <input type="number" id="emiAmount" placeholder="Loan Amount">
+  <input type="number" id="emiRate" placeholder="Interest Rate (%)">
+  <input type="number" id="emiTenure" placeholder="Tenure (Years)">
+  <button onclick="calculateEMI()">Calculate EMI & Show Graph</button>
+  <h3 id="emiResult"></h3>
+  <canvas id="emiChart" style="background:white; border-radius:10px;"></canvas>
+  <button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function hideAll(){
+  document.querySelectorAll("section").forEach(sec=>sec.classList.remove("active"));
+}
+
+// LOGIN
+function login(){ 
+  if(loginUser.value && loginPass.value){ 
+    hideAll(); 
+    languageSection.classList.add("active"); 
+  }else alert("Enter login details"); 
+}
+
+function goLoanForm(){ hideAll(); loanFormSection.classList.add("active"); }
+
+let banks=[ 
+  {name:"SBI",home:8.5,car:9.1,personal:11.2,education:8.0}, 
+  {name:"HDFC",home:8.7,car:9.5,personal:12.0,education:9.0}, 
+  {name:"ICICI",home:8.9,car:9.3,personal:11.8,education:9.2}, 
+  {name:"Axis",home:9.0,car:9.7,personal:12.5,education:9.5}, 
+  {name:"PNB",home:8.4,car:9.2,personal:11.0,education:8.5} 
+];
+
+// LOAN ANALYSIS + ELIGIBILITY METER
+function analyzeLoan(){ 
+  let type=loanType.value.toLowerCase(); 
+  let amount=parseFloat(loanAmountReq.value); 
+  let tenure=parseInt(loanTenurePref.value); 
+  let score=parseInt(creditScore.value); 
+  let co=coApplicant.value; 
+  let months=tenure*12; 
+
+  let lowestEMI=Infinity; 
+  let bestBank=""; 
+  let rows=[]; 
+
+  banks.forEach(bank=>{
+    let interest=bank[type]; 
+    let approval=score>=750?90:score>=650?70:score>=550?50:20; 
+    if(co==="Yes") approval+=5; 
+
+    let R=interest/12/100; 
+    let EMI=(amount*R*Math.pow(1+R,months))/(Math.pow(1+R,months)-1); 
+
+    if(EMI<lowestEMI){lowestEMI=EMI; bestBank=bank.name;} 
+    rows.push({name:bank.name,interest,EMI,approval});
+  });
+
+  let table="<h3 style='color:lightgreen'>⭐ Recommended Bank: "+bestBank+" (Lowest EMI)</h3>";
+  table+="<table><tr><th>Bank</th><th>Interest %</th><th>EMI</th><th>Approval %</th></tr>";
+
+  rows.forEach(bank=>{
+    let highlight=bank.name===bestBank?"class='recommended'":""; 
+    table+=`<tr ${highlight}> <td>${bank.name}</td> <td>${bank.interest}%</td> <td>₹${bank.EMI.toFixed(0)}</td> <td>${bank.approval}%</td> </tr>`;
+  });
+  table+="</table>";
+
+  hideAll(); 
+  loanResultSection.classList.add("active"); 
+  loanResult.innerHTML=table;
+
+  // Show Loan Eligibility Meter
+  let finalApproval = score>=750?90:score>=650?70:score>=550?50:20;
+  if(co==="Yes") finalApproval+=5;
+  eligibilityBar.style.width = finalApproval + "%";
+  eligibilityText.innerHTML = "Approval Probability: " + finalApproval + "%";
+}
+
+// DASHBOARD
+function goDashboard(){ hideAll(); dashboardSection.classList.add("active"); }
+function logout(){ hideAll(); loginSection.classList.add("active"); }
+function showUPI(){ hideAll(); upiSection.classList.add("active"); }
+function showConverter(){ hideAll(); converterSection.classList.add("active"); }
+function showCalculator(){ hideAll(); calculatorSection.classList.add("active"); }
+function showChatbot(){ hideAll(); chatbotSection.classList.add("active"); }
+function showEMIGraph(){ hideAll(); emiGraphSection.classList.add("active"); }
+
+// CURRENCY CONVERTER
+function convertCurrency(){ 
+  let amt=parseFloat(amount.value); 
+  let from=fromCurrency.value; 
+  let to=toCurrency.value; 
+  let rates={ INR:{USD:0.012,EUR:0.011}, USD:{INR:83,EUR:0.92}, EUR:{INR:90,USD:1.08} }; 
+  let result=(from===to)?amt:amt*rates[from][to]; 
+  conversionResult.innerHTML="Converted Amount: "+result.toFixed(2); 
+}
+
+// CALCULATOR
+function press(val){ calcDisplay.value+=val; }
+function clearCalc(){ calcDisplay.value=""; }
+function calculateResult(){ try{ calcDisplay.value=eval(calcDisplay.value); }catch{ alert("Invalid Expression"); } }
+
+// CHATBOT
+function askBot(){ 
+  let q=userQuestion.value.toLowerCase(); 
+  let chat=chatArea; 
+  chat.innerHTML+=`<div class="user">You: ${q}</div>`; 
+
+  function getLowest(type){ return banks.reduce((min,b)=>b[type]<min[type]?b:min); } 
+
+  let response="Try asking: Best home loan?"; 
+  if(q.includes("home") && q.includes("loan")){ let best=getLowest("home"); response=`${best.name} offers lowest home loan interest at ${best.home}%.`; } 
+  else if(q.includes("car") && q.includes("loan")){ let best=getLowest("car"); response=`${best.name} offers lowest car loan interest at ${best.car}%.`; } 
+  else if(q.includes("personal") && q.includes("loan")){ let best=getLowest("personal"); response=`${best.name} offers lowest personal loan interest at ${best.personal}%.`; } 
+  else if(q.includes("education") && q.includes("loan")){ let best=getLowest("education"); response=`${best.name} offers lowest education loan interest at ${best.education}%.`; } 
+
+  chat.innerHTML+=`<div class="bot">Bot: ${response}</div>`; 
+  chat.scrollTop=chat.scrollHeight; 
+  userQuestion.value=""; 
+}
+
+// UPI
+function generateUPI(){ 
+  let link=`upi://pay?pa=${upiID.value}&am=${upiAmount.value}&cu=INR`; 
+  upiLink.innerHTML=`<a href="${link}">${link}</a>`; 
+  paymentStatus.innerHTML=`<p class="success">Ready for Payment</p>`; 
+}
+
+// EMI CALCULATOR WITH GRAPH
+function calculateEMI(){
+  let P=parseFloat(emiAmount.value);
+  let r=parseFloat(emiRate.value)/12/100;
+  let n=parseInt(emiTenure.value)*12;
+
+  if(!P || !r || !n){
+    alert("Enter all details");
+    return;
+  }
+
+  let EMI=(P*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+  emiResult.innerHTML=`Monthly EMI: ₹${EMI.toFixed(0)}`;
+
+  let data=[];
+  for(let i=1;i<=n;i++){ data.push(EMI*i); }
+
+  if(window.emiChartInstance) window.emiChartInstance.destroy();
+  const ctx=document.getElementById('emiChart').getContext('2d');
+  window.emiChartInstance=new Chart(ctx,{
+    type:'line',
+    data:{ labels:Array.from({length:n},(_,i)=>i+1), datasets:[{label:'Cumulative EMI', data:data, borderColor:'orange', fill:false, tension:0.3}]},
+    options:{responsive:true, plugins:{legend:{display:true}}, scales:{x:{title:{display:true,text:'Month'}},y:{title:{display:true,text:'Cumulative Payment (₹)'}}}}
+  });
+}
+</script>
+
+</body>
+</html>
