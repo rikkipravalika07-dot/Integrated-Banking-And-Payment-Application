@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Advanced Multi Banking System</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>Advanced Multi Banking System</header>
+
+<!-- LOGIN -->
+<section id="loginSection" class="active">
+<h2>Login</h2>
+<input type="text" id="loginUser" placeholder="Username">
+<input type="password" id="loginPass" placeholder="Password">
+<button onclick="login()">Login</button>
+</section>
+
+<!-- LANGUAGE -->
+<section id="languageSection">
+<h2>Select Language</h2>
+<select>
+<option>English</option>
+<option>Hindi</option>
+<option>Telugu</option>
+</select>
+<button onclick="goLoanForm()">Continue</button>
+</section>
+
+<!-- LOAN FORM -->
+<section id="loanFormSection">
+<h2>Loan Application</h2>
+
+<select id="loanType">
+<option>Home</option>
+<option>Car</option>
+<option>Personal</option>
+<option>Education</option>
+</select>
+
+<input type="number" id="loanAmountReq" placeholder="Loan Amount">
+<input type="number" id="loanTenurePref" placeholder="Tenure (Years)">
+<select id="coApplicant">
+<option>No</option>
+<option>Yes</option>
+</select>
+<input type="number" id="creditScore" placeholder="Credit Score (300-900)">
+
+<button onclick="analyzeLoan()">Submit</button>
+</section>
+
+<!-- LOAN RESULT -->
+<section id="loanResultSection">
+<h2>Loan Eligibility & Bank Comparison</h2>
+<div id="loanResult"></div>
+
+<div id="loanMeterSection">
+<h3>Loan Approval Probability</h3>
+
+<div class="meter">
+<div id="eligibilityBar"></div>
+</div>
+
+<p id="eligibilityText"></p>
+</div>
+
+<button onclick="goDashboard()">Continue to Dashboard</button>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboardSection">
+<h2>Dashboard</h2>
+
+<button onclick="showUPI()">UPI Payment</button>
+<button onclick="showConverter()">Currency Converter</button>
+<button onclick="showCalculator()">Calculator</button>
+<button onclick="showChatbot()">Banking Assistant (AI)</button>
+<button onclick="showEMIGraph()">EMI Calculator & Graph</button>
+
+<button onclick="logout()">Logout</button>
+</section>
+
+<!-- CHATBOT -->
+<section id="chatbotSection">
+<h2>Banking Assistant</h2>
+
+<div class="chatbox" id="chatArea"></div>
+
+<input type="text" id="userQuestion" placeholder="Ask: Best home loan?">
+
+<button onclick="askBot()">Ask</button>
+<button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- CURRENCY -->
+<section id="converterSection">
+<h2>Currency Converter</h2>
+
+<input type="number" id="amount" placeholder="Amount">
+
+<select id="fromCurrency">
+<option value="INR">INR</option>
+<option value="USD">USD</option>
+<option value="EUR">EUR</option>
+</select>
+
+<select id="toCurrency">
+<option value="USD">USD</option>
+<option value="INR">INR</option>
+<option value="EUR">EUR</option>
+</select>
+
+<button onclick="convertCurrency()">Convert</button>
+
+<h3 id="conversionResult"></h3>
+
+<button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculatorSection">
+<h2>Smart Calculator</h2>
+
+<input type="text" id="calcDisplay" readonly>
+
+<div class="calc-grid">
+<button onclick="press('7')">7</button>
+<button onclick="press('8')">8</button>
+<button onclick="press('9')">9</button>
+<button onclick="press('/')">÷</button>
+
+<button onclick="press('4')">4</button>
+<button onclick="press('5')">5</button>
+<button onclick="press('6')">6</button>
+<button onclick="press('*')">×</button>
+
+<button onclick="press('1')">1</button>
+<button onclick="press('2')">2</button>
+<button onclick="press('3')">3</button>
+<button onclick="press('-')">−</button>
+
+<button onclick="press('0')">0</button>
+<button onclick="press('.')">.</button>
+<button onclick="calculateResult()">=</button>
+<button onclick="press('+')">+</button>
+
+<button onclick="clearCalc()" class="clear">Clear</button>
+</div>
+
+<button onclick="goDashboard()">Back</button>
+</section>
+
+<!-- UPI -->
+<section id="upiSection">
+
+<h2>UPI Payment</h2>
+
+<input type="text" id="upiID" placeholder="example@upi">
+<input type="number" id="upiAmount" placeholder="Amount">
+
+<button onclick="generateUPI()">Generate</button>
+
+<div id="upiLink"></div>
+<div id="paymentStatus"></div>
+
+<button onclick="goDashboard()">Back</button>
+
+</section>
+
+<!-- EMI GRAPH -->
+<section id="emiGraphSection">
+
+<h2>EMI Calculator & Graph</h2>
+
+<input type="number" id="emiAmount" placeholder="Loan Amount">
+<input type="number" id="emiRate" placeholder="Interest Rate (%)">
+<input type="number" id="emiTenure" placeholder="Tenure (Years)">
+
+<button onclick="calculateEMI()">Calculate EMI</button>
+
+<h3 id="emiResult"></h3>
+
+<canvas id="emiChart"></canvas>
+
+<button onclick="goDashboard()">Back</button>
+
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>
